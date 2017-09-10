@@ -1,0 +1,514 @@
+{
+  "Records": [
+    {
+      "eventID": "3eb7c15867c76f99aaf50a7fc5284ba3",
+      "eventName": "MODIFY",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "eu-west-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1504280460,
+        "Keys": {
+          "cityId": {
+            "N": "2618425"
+          },
+          "timestamp": {
+            "N": "1504277400"
+          }
+        },
+        "NewImage": {
+          "windDeg": {
+            "N": "90"
+          },
+          "temp": {
+            "N": "17.99"
+          },
+          "cityName": {
+            "S": "Copenhagen"
+          },
+          "visibility": {
+            "N": "10000"
+          },
+          "humidity": {
+            "N": "55"
+          },
+          "cityId": {
+            "N": "2618425"
+          },
+          "pressure": {
+            "N": "1019"
+          },
+          "windSpeed": {
+            "N": "3.1"
+          },
+          "timestamp": {
+            "N": "1504277400"
+          }
+        },
+        "SequenceNumber": "34330200000000007210982872",
+        "SizeBytes": 129,
+        "StreamViewType": "NEW_IMAGE"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:eu-west-1:502267884597:table/weather2/stream/2017-08-31T12:48:26.426"
+    },
+    {
+      "eventID": "78b0ebed276e3f5076ffe79a8d5f5d9d",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "eu-west-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1504280460,
+        "Keys": {
+          "cityId": {
+            "N": "6453366"
+          },
+          "timestamp": {
+            "N": "1504279200"
+          }
+        },
+        "NewImage": {
+          "windDeg": {
+            "N": "190"
+          },
+          "temp": {
+            "N": "17"
+          },
+          "cityName": {
+            "S": "Oslo"
+          },
+          "visibility": {
+            "N": "10000"
+          },
+          "humidity": {
+            "N": "55"
+          },
+          "cityId": {
+            "N": "6453366"
+          },
+          "pressure": {
+            "N": "1016"
+          },
+          "windSpeed": {
+            "N": "4.1"
+          },
+          "timestamp": {
+            "N": "1504279200"
+          }
+        },
+        "SequenceNumber": "34330300000000007210982873",
+        "SizeBytes": 123,
+        "StreamViewType": "NEW_IMAGE"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:eu-west-1:502267884597:table/weather2/stream/2017-08-31T12:48:26.426"
+    },
+    {
+      "eventID": "ea599dc48c6e8e03a2d7e29e02d36a45",
+      "eventName": "MODIFY",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "eu-west-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1504280460,
+        "Keys": {
+          "cityId": {
+            "N": "2661552"
+          },
+          "timestamp": {
+            "N": "1504277400"
+          }
+        },
+        "NewImage": {
+          "windDeg": {
+            "N": "300"
+          },
+          "temp": {
+            "N": "14.17"
+          },
+          "cityName": {
+            "S": "Bern"
+          },
+          "visibility": {
+            "N": "6000"
+          },
+          "humidity": {
+            "N": "93"
+          },
+          "cityId": {
+            "N": "2661552"
+          },
+          "pressure": {
+            "N": "1019"
+          },
+          "windSpeed": {
+            "N": "2.1"
+          },
+          "timestamp": {
+            "N": "1504277400"
+          }
+        },
+        "SequenceNumber": "34330400000000007210982874",
+        "SizeBytes": 123,
+        "StreamViewType": "NEW_IMAGE"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:eu-west-1:502267884597:table/weather2/stream/2017-08-31T12:48:26.426"
+    },
+    {
+      "eventID": "70e5a6a50685595341d506106bcd93e5",
+      "eventName": "MODIFY",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "eu-west-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1504280460,
+        "Keys": {
+          "cityId": {
+            "N": "792680"
+          },
+          "timestamp": {
+            "N": "1504278000"
+          }
+        },
+        "NewImage": {
+          "windDeg": {
+            "N": "310"
+          },
+          "temp": {
+            "N": "32.49"
+          },
+          "cityName": {
+            "S": "Belgrade"
+          },
+          "visibility": {
+            "N": "10000"
+          },
+          "humidity": {
+            "N": "36"
+          },
+          "cityId": {
+            "N": "792680"
+          },
+          "pressure": {
+            "N": "1011"
+          },
+          "windSpeed": {
+            "N": "7.7"
+          },
+          "timestamp": {
+            "N": "1504278000"
+          }
+        },
+        "SequenceNumber": "34330500000000007210982876",
+        "SizeBytes": 126,
+        "StreamViewType": "NEW_IMAGE"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:eu-west-1:502267884597:table/weather2/stream/2017-08-31T12:48:26.426"
+    },
+    {
+      "eventID": "a6a32f909c35b434b7eb4f98c4c74819",
+      "eventName": "MODIFY",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "eu-west-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1504280460,
+        "Keys": {
+          "cityId": {
+            "N": "616187"
+          },
+          "timestamp": {
+            "N": "1504277400"
+          }
+        },
+        "NewImage": {
+          "windDeg": {
+            "N": "130"
+          },
+          "temp": {
+            "N": "29.79"
+          },
+          "cityName": {
+            "S": "Talin"
+          },
+          "visibility": {
+            "N": "10000"
+          },
+          "humidity": {
+            "N": "19"
+          },
+          "cityId": {
+            "N": "616187"
+          },
+          "pressure": {
+            "N": "1015"
+          },
+          "windSpeed": {
+            "N": "9.8"
+          },
+          "timestamp": {
+            "N": "1504277400"
+          }
+        },
+        "SequenceNumber": "34330600000000007210982912",
+        "SizeBytes": 123,
+        "StreamViewType": "NEW_IMAGE"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:eu-west-1:502267884597:table/weather2/stream/2017-08-31T12:48:26.426"
+    },
+    {
+      "eventID": "27a86a33294f6117e649a71a560b8ba9",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "eu-west-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1504280460,
+        "Keys": {
+          "cityId": {
+            "N": "6695624"
+          },
+          "timestamp": {
+            "N": "1504279800"
+          }
+        },
+        "NewImage": {
+          "windDeg": {
+            "N": "30"
+          },
+          "temp": {
+            "N": "18"
+          },
+          "cityName": {
+            "S": "Warszawa"
+          },
+          "visibility": {
+            "N": "10000"
+          },
+          "humidity": {
+            "N": "77"
+          },
+          "cityId": {
+            "N": "6695624"
+          },
+          "pressure": {
+            "N": "1013"
+          },
+          "windSpeed": {
+            "N": "4.6"
+          },
+          "timestamp": {
+            "N": "1504279800"
+          }
+        },
+        "SequenceNumber": "34330700000000007210982944",
+        "SizeBytes": 126,
+        "StreamViewType": "NEW_IMAGE"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:eu-west-1:502267884597:table/weather2/stream/2017-08-31T12:48:26.426"
+    },
+    {
+      "eventID": "ceff3cb62c7dacfb2deaffd9d43eae9c",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "eu-west-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1504280760,
+        "Keys": {
+          "cityId": {
+            "N": "6458923"
+          },
+          "timestamp": {
+            "N": "1504279800"
+          }
+        },
+        "NewImage": {
+          "windDeg": {
+            "N": "330"
+          },
+          "temp": {
+            "N": "27.99"
+          },
+          "cityName": {
+            "S": "Lisbon"
+          },
+          "visibility": {
+            "N": "10000"
+          },
+          "humidity": {
+            "N": "32"
+          },
+          "cityId": {
+            "N": "6458923"
+          },
+          "pressure": {
+            "N": "1017"
+          },
+          "windSpeed": {
+            "N": "8.7"
+          },
+          "timestamp": {
+            "N": "1504279800"
+          }
+        },
+        "SequenceNumber": "34330800000000007211103307",
+        "SizeBytes": 126,
+        "StreamViewType": "NEW_IMAGE"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:eu-west-1:502267884597:table/weather2/stream/2017-08-31T12:48:26.426"
+    },
+    {
+      "eventID": "e433b53a30e5c0eb50da8554bcc35dc6",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "eu-west-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1504280760,
+        "Keys": {
+          "cityId": {
+            "N": "792680"
+          },
+          "timestamp": {
+            "N": "1504279800"
+          }
+        },
+        "NewImage": {
+          "windDeg": {
+            "N": "320"
+          },
+          "temp": {
+            "N": "31.49"
+          },
+          "cityName": {
+            "S": "Belgrade"
+          },
+          "visibility": {
+            "N": "10000"
+          },
+          "humidity": {
+            "N": "38"
+          },
+          "cityId": {
+            "N": "792680"
+          },
+          "pressure": {
+            "N": "1011"
+          },
+          "windSpeed": {
+            "N": "7.2"
+          },
+          "timestamp": {
+            "N": "1504279800"
+          }
+        },
+        "SequenceNumber": "34330900000000007211103460",
+        "SizeBytes": 126,
+        "StreamViewType": "NEW_IMAGE"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:eu-west-1:502267884597:table/weather2/stream/2017-08-31T12:48:26.426"
+    },
+    {
+      "eventID": "5db9c602358eefb54a0643cde37ffd8d",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "eu-west-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1504280760,
+        "Keys": {
+          "cityId": {
+            "N": "727011"
+          },
+          "timestamp": {
+            "N": "1504279800"
+          }
+        },
+        "NewImage": {
+          "windDeg": {
+            "N": "290"
+          },
+          "temp": {
+            "N": "30"
+          },
+          "cityName": {
+            "S": "Sofia"
+          },
+          "visibility": {
+            "N": "10000"
+          },
+          "humidity": {
+            "N": "27"
+          },
+          "cityId": {
+            "N": "727011"
+          },
+          "pressure": {
+            "N": "1012"
+          },
+          "windSpeed": {
+            "N": "3.1"
+          },
+          "timestamp": {
+            "N": "1504279800"
+          }
+        },
+        "SequenceNumber": "34331000000000007211103495",
+        "SizeBytes": 122,
+        "StreamViewType": "NEW_IMAGE"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:eu-west-1:502267884597:table/weather2/stream/2017-08-31T12:48:26.426"
+    },
+    {
+      "eventID": "711eb37db95dfe6ac2fd3b4b71ca5eb2",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "eu-west-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1504280760,
+        "Keys": {
+          "cityId": {
+            "N": "675810"
+          },
+          "timestamp": {
+            "N": "1504279800"
+          }
+        },
+        "NewImage": {
+          "windDeg": {
+            "N": "330"
+          },
+          "temp": {
+            "N": "25"
+          },
+          "cityName": {
+            "S": "Iasi"
+          },
+          "visibility": {
+            "N": "10000"
+          },
+          "humidity": {
+            "N": "31"
+          },
+          "cityId": {
+            "N": "675810"
+          },
+          "pressure": {
+            "N": "1012"
+          },
+          "windSpeed": {
+            "N": "2.1"
+          },
+          "timestamp": {
+            "N": "1504279800"
+          }
+        },
+        "SequenceNumber": "34331100000000007211103496",
+        "SizeBytes": 121,
+        "StreamViewType": "NEW_IMAGE"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:eu-west-1:502267884597:table/weather2/stream/2017-08-31T12:48:26.426"
+    }
+  ]
+}
