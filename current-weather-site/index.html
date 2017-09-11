@@ -1,0 +1,108 @@
+<html>
+<head>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <title>Weather Iasi</title>
+</head>
+<body>
+<svg class="svg1" width="600" height="280"></svg>
+<svg class="svg2" width="600" height="280"></svg>
+<svg class="svg3" width="600" height="280"></svg>
+<svg class="svg4" width="600" height="280"></svg>
+<svg class="svg5" width="600" height="280"></svg>
+<svg class="svg6" width="600" height="280"></svg>
+<svg class="svg7" width="600" height="280"></svg>
+<svg class="svg8" width="600" height="280"></svg>
+
+<script>
+    var renderChart = function (svgSelector, csvFilePath) {
+
+        var svg = d3.select(svgSelector),
+            margin = {top: 40, right: 20, bottom: 30, left: 50},
+            width = +svg.attr("width") - margin.left - margin.right,
+            height = +svg.attr("height") - margin.top - margin.bottom,
+            g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var x = d3.scaleTime().rangeRound([0, width]);
+        var y = d3.scaleLinear().rangeRound([height, 0]);
+
+        var line = d3.line()
+            .x(function (d) {
+                return x(d.date);
+            })
+            .y(function (d) {
+                return y(d.temp);
+            });
+
+        d3.csv(csvFilePath, type, render);
+        setInterval(function () {
+            d3.csv(csvFilePath, type, render);
+        }, 60 * 1000);
+
+        function type(d) {
+            d.date = new Date(d.timestamp * 1000);
+            return d;
+        }
+
+        function render(error, data) {
+            NO_OF_DAYS = 3;
+            NO_OF_DAYS_TO_MILLIS = NO_OF_DAYS * 24 * 60 * 60 * 1000;
+            data = data.filter(function (d) {
+                return d.timestamp * 1000 + NO_OF_DAYS_TO_MILLIS >= +new Date();
+            });
+
+            g.append("text")
+                .attr("x", width / 2)
+                .attr("y", -10)
+                .attr("text-anchor", "middle")
+                .attr("fill", "darkblue")
+                .attr("font-size", "20")
+                .text(data[0].cityName + " " + data[data.length - 1].temp);
+
+            x.domain(d3.extent(data, function (d) {
+                return d.date;
+            }));
+            y.domain(d3.extent(data, function (d) {
+                return +d.temp;
+            }));
+
+            console.log(y.domain());
+
+            g.append("g")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x))
+                .select(".domain");
+
+            g.append("g")
+                .call(d3.axisLeft(y))
+                .append("text")
+                .attr("fill", "#000")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", "0.71em")
+                .attr("text-anchor", "end")
+                .text("Temp (°C)");
+
+            path = g.append("path").datum(data);
+
+            path
+                .attr("fill", "none")
+                .attr("stroke", "steelblue")
+                .attr("stroke-linejoin", "round")
+                .attr("stroke-linecap", "round")
+                .attr("stroke-width", 1.5)
+                .attr("d", line);
+        }
+    };
+
+
+    renderChart(".svg1", "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Iasi-675810.csv");
+    renderChart(".svg3", "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Bucharest-683506.csv");
+    renderChart(".svg2", "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Berlin-2950159.csv");
+    renderChart(".svg4", "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Amsterdam-2759794.csv");
+    renderChart(".svg5", "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Athens-264371.csv");
+    renderChart(".svg6", "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Bern-2661552.csv");
+    renderChart(".svg7", "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Bratislava-3060972.csv");
+    renderChart(".svg8", "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Bruxelles-Capitale-2800867.csv");
+</script>
+</body>
+</html>
