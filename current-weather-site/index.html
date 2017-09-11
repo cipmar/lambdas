@@ -4,76 +4,68 @@
     <title>Weather Iasi</title>
 </head>
 <body>
-<svg class="svg1" width="600" height="280"></svg>
-<svg class="svg2" width="600" height="280"></svg>
-<svg class="svg3" width="600" height="280"></svg>
-<svg class="svg4" width="600" height="280"></svg>
-<svg class="svg5" width="600" height="280"></svg>
-<svg class="svg6" width="600" height="280"></svg>
-<svg class="svg7" width="600" height="280"></svg>
-<svg class="svg8" width="600" height="280"></svg>
-
 <script>
-    var renderChart = function (svgSelector, csvFilePath) {
-
-        var svg = d3.select(svgSelector),
-            margin = {top: 40, right: 20, bottom: 30, left: 50},
-            width = +svg.attr("width") - margin.left - margin.right,
-            height = +svg.attr("height") - margin.top - margin.bottom,
-            g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        var x = d3.scaleTime().rangeRound([0, width]);
-        var y = d3.scaleLinear().rangeRound([height, 0]);
-
-        var line = d3.line()
-            .x(function (d) {
-                return x(d.date);
-            })
-            .y(function (d) {
-                return y(d.temp);
-            });
-
-        d3.csv(csvFilePath, type, render);
-        setInterval(function () {
-            d3.csv(csvFilePath, type, render);
-        }, 60 * 1000);
-
+    function renderChart(csvFile) {
         function type(d) {
             d.date = new Date(d.timestamp * 1000);
             return d;
         }
 
+        function filterDataLastNoDays(data, noDays) {
+            var NO_OF_DAYS_TO_MILLIS = noDays * 24 * 60 * 60 * 1000;
+            return data.filter(function (d) {return d.timestamp * 1000 + NO_OF_DAYS_TO_MILLIS >= +new Date();});
+        }
+
+        d3.csv(csvFile, type, render);
+
         function render(error, data) {
-            NO_OF_DAYS = 3;
-            NO_OF_DAYS_TO_MILLIS = NO_OF_DAYS * 24 * 60 * 60 * 1000;
-            data = data.filter(function (d) {
-                return d.timestamp * 1000 + NO_OF_DAYS_TO_MILLIS >= +new Date();
-            });
+            data = filterDataLastNoDays(data, 3);
+            var cityName = data[0].cityName;
+
+            var svg = d3.select("body")
+                .append("svg")
+                .attr("class", "svg " + cityName)
+                .attr("width", 600)
+                .attr("height", 280);
+
+            var margin = {top: 40, right: 20, bottom: 30, left: 50},
+                width = +svg.attr("width") - margin.left - margin.right,
+                height = +svg.attr("height") - margin.top - margin.bottom;
+
+            var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            // the scales
+            var x = d3.scaleTime().rangeRound([0, width]);
+            var y = d3.scaleLinear().rangeRound([height, 0]);
+
+            // the axes
+            var xAxis = d3.axisBottom().scale(x);
+            var yAxis = d3.axisLeft().scale(y);
+
+            var line = d3.line()
+                .x(function (d) {return x(d.date);})
+                .y(function (d) {return y(d.temp);});
+
+            x.domain(d3.extent(data, function (d) {return d.date;}));
+            y.domain(d3.extent(data, function (d) {return +d.temp;}));
 
             g.append("text")
+                .attr("class", "title " + cityName)
                 .attr("x", width / 2)
                 .attr("y", -10)
                 .attr("text-anchor", "middle")
                 .attr("fill", "darkblue")
                 .attr("font-size", "20")
-                .text(data[0].cityName + " " + data[data.length - 1].temp);
-
-            x.domain(d3.extent(data, function (d) {
-                return d.date;
-            }));
-            y.domain(d3.extent(data, function (d) {
-                return +d.temp;
-            }));
-
-            console.log(y.domain());
+                .text(cityName + " " + data[data.length - 1].temp);
 
             g.append("g")
+                .attr("class", "x axis " + cityName)
                 .attr("transform", "translate(0," + height + ")")
-                .call(d3.axisBottom(x))
-                .select(".domain");
+                .call(xAxis);
 
             g.append("g")
-                .call(d3.axisLeft(y))
+                .attr("class", "y axis " + cityName)
+                .call(yAxis)
                 .append("text")
                 .attr("fill", "#000")
                 .attr("transform", "rotate(-90)")
@@ -82,27 +74,48 @@
                 .attr("text-anchor", "end")
                 .text("Temp (°C)");
 
-            path = g.append("path").datum(data);
-
-            path
+            path = g.append("path").datum(data)
+                .attr("class", "path " + cityName)
                 .attr("fill", "none")
                 .attr("stroke", "steelblue")
                 .attr("stroke-linejoin", "round")
                 .attr("stroke-linecap", "round")
-                .attr("stroke-width", 1.5)
+                .attr("stroke-width", 1)
                 .attr("d", line);
+
+            setInterval(function () {updateData();}, 60 * 1000);
+
+            function updateData() {
+                d3.csv(csvFile, type, function (error, data) {
+                    data = filterDataLastNoDays(data, 3);
+                    var cityName = data[0].cityName;
+
+                    x.domain(d3.extent(data, function (d) {return d.date;}));
+                    y.domain(d3.extent(data, function (d) {return +d.temp;}));
+
+                    var svg = d3.select(".svg." + cityName);
+
+                    svg.select(".path." + cityName).attr("d", line(data));
+                    svg.select(".x.axis." + cityName).call(xAxis);
+                    svg.select(".y.axis." + cityName).call(yAxis);
+                    svg.select(".title." + cityName).text(cityName + " " + data[data.length - 1].temp);
+                });
+            }
         }
-    };
+    }
 
+    var cities = [
+        "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Iasi-675810.csv",
+        "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Bucharest-683506.csv",
+        "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Berlin-2950159.csv",
+        "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Amsterdam-2759794.csv",
+        "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Athens-264371.csv",
+        "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Bern-2661552.csv",
+        "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Bratislava-3060972.csv",
+        "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Bruxelles-Capitale-2800867.csv"
+    ];
 
-    renderChart(".svg1", "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Iasi-675810.csv");
-    renderChart(".svg3", "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Bucharest-683506.csv");
-    renderChart(".svg2", "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Berlin-2950159.csv");
-    renderChart(".svg4", "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Amsterdam-2759794.csv");
-    renderChart(".svg5", "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Athens-264371.csv");
-    renderChart(".svg6", "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Bern-2661552.csv");
-    renderChart(".svg7", "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Bratislava-3060972.csv");
-    renderChart(".svg8", "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Bruxelles-Capitale-2800867.csv");
+    cities.forEach(renderChart);
 </script>
 </body>
 </html>
