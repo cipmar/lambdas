@@ -1,0 +1,20 @@
+[
+  {
+    "timestamp": 1504410780,
+    "humidity": 93,
+    "pressure": 1018,
+    "temp": 9,
+    "visibility": 10000,
+    "windSpeed": 1,
+    "windDeg": 220
+  },
+  {
+    "timestamp": 1504415340,
+    "humidity": 94,
+    "pressure": 1019,
+    "temp": 8,
+    "visibility": 10000,
+    "windSpeed": 1,
+    "windDeg": 240
+  }
+]

@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {},
+  "id": "http://example.com/example.json",
+  "items": {
+    "id": "/items",
+    "properties": {
+      "cityId": {
+        "id": "/items/properties/cityId",
+        "type": "integer"
+      },
+      "cityName": {
+        "id": "/items/properties/cityName",
+        "type": "string"
+      },
+      "humidity": {
+        "id": "/items/properties/humidity",
+        "type": "integer"
+      },
+      "pressure": {
+        "id": "/items/properties/pressure",
+        "type": "integer"
+      },
+      "temp": {
+        "id": "/items/properties/temp",
+        "type": "integer"
+      },
+      "timestamp": {
+        "id": "/items/properties/timestamp",
+        "type": "integer"
+      },
+      "visibility": {
+        "id": "/items/properties/visibility",
+        "type": "integer"
+      },
+      "windDeg": {
+        "id": "/items/properties/windDeg",
+        "type": "integer"
+      },
+      "windSpeed": {
+        "id": "/items/properties/windSpeed",
+        "type": "number"
+      }
+    },
+    "required": [
+      "windSpeed",
+      "pressure",
+      "cityId",
+      "humidity",
+      "visibility",
+      "cityName",
+      "timestamp",
+      "windDeg",
+      "temp"
+    ],
+    "type": "object"
+  },
+  "type": "array"
+}
