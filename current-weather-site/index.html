@@ -5,21 +5,21 @@
 </head>
 <body>
 <script>
-    function renderChart(csvFile) {
+    function renderChart(url) {
         function type(d) {
             d.date = new Date(d.timestamp * 1000);
             return d;
         }
 
-        function filterDataLastNoDays(data, noDays) {
-            var NO_OF_DAYS_TO_MILLIS = noDays * 24 * 60 * 60 * 1000;
-            return data.filter(function (d) {return d.timestamp * 1000 + NO_OF_DAYS_TO_MILLIS >= +new Date();});
-        }
-
-        d3.csv(csvFile, type, render);
+        d3.json(url, render);
 
         function render(error, data) {
-            data = filterDataLastNoDays(data, 3);
+            if (!data) {return;}
+
+            data.forEach(function (d) {
+                d.date = new Date(d.timestamp * 1000);
+            });
+
             var cityName = data[0].cityName;
 
             var svg = d3.select("body")
@@ -86,7 +86,7 @@
             setInterval(function () {updateData();}, 60 * 1000);
 
             function updateData() {
-                d3.csv(csvFile, type, function (error, data) {
+                d3.json(url, type, function (error, data) {
                     data = filterDataLastNoDays(data, 3);
                     var cityName = data[0].cityName;
 
@@ -104,18 +104,14 @@
         }
     }
 
-    var cities = [
-        "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Iasi-675810.csv",
-        "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Bucharest-683506.csv",
-        "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Berlin-2950159.csv",
-        "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Amsterdam-2759794.csv",
-        "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Athens-264371.csv",
-        "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Bern-2661552.csv",
-        "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Bratislava-3060972.csv",
-        "https://s3-eu-west-1.amazonaws.com/weather-db-data/weather-Bruxelles-Capitale-2800867.csv"
-    ];
+    var cities = [675810, 683506, 2950159, 2759794, 264371, 2661552,
+        3060972, 2800867, 2960316, 616187, 3186886, 792680, 3054643,
+        2618425, 2964574, 658226, 703448, 6458923, 3196359, 2643743,
+        6359304, 6453366, 6455259];
 
-    cities.forEach(renderChart);
+    cities.forEach(function(cityId){
+        renderChart("https://0z2b3gf0dk.execute-api.eu-west-1.amazonaws.com/test/weather/current/" + cityId);
+    });
 </script>
 </body>
 </html>
