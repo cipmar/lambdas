@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import static java.lang.System.getenv;
 import static java.util.Arrays.asList;
@@ -30,19 +31,24 @@ public class CurrentWeatherFetcher {
             .queryParam("appid", getenv("openWeatherAppId"));
 
     public void handler(InputStream inputStream) throws IOException {
-        asList(getenv("cities").split(",")).forEach(cityId -> {
+        List<String> cities = asList(getenv("cities").split(","));
+
+        for (String cityId : cities) {
             Response response = WEATHER_WEB_TARGET
                     .queryParam("id", cityId)
                     .request(MediaType.APPLICATION_JSON)
                     .get();
 
+            String strResponse = response.readEntity(String.class);
+            WeatherInfo weatherInfo = OBJECT_MAPPER.readValue(strResponse, WeatherInfo.class);
+
             try {
-                WeatherInfo weatherInfo = OBJECT_MAPPER.readValue(response.readEntity(String.class), WeatherInfo.class);
                 saveToDynamoDb(weatherInfo);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                System.out.println("Failed to save weather data: " + strResponse);
+                throw e;
             }
-        });
+        }
     }
 
     private void saveToDynamoDb(WeatherInfo weatherInfo) {
@@ -64,6 +70,5 @@ public class CurrentWeatherFetcher {
         ofNullable(weatherInfo.wind.speed).ifPresent(v -> item.withNumber("windSpeed", v));
 
         table.putItem(item);
-        System.out.println("Successfully save item: " + item);
     }
 }
