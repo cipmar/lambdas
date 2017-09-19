@@ -12,41 +12,32 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CurrentWeatherQuery {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final int DAYS_BACK = 3;
 
     public void handler(InputStream inputStream, OutputStream outputStream) throws IOException {
-        printInput(inputStream);
-
-        final Long CITY_ID = 2800867L;
-        final String TIMESTAMP = "1504407300";
+        QueryRequest queryRequest = OBJECT_MAPPER.readValue(inputStream, QueryRequest.class);
 
         AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
         DynamoDBMapper mapper = new DynamoDBMapper(client);
 
         Condition rangeKeyCondition = new Condition();
         rangeKeyCondition.withComparisonOperator(ComparisonOperator.GE)
-                .withAttributeValueList(new AttributeValue().withN(TIMESTAMP));
+                .withAttributeValueList(new AttributeValue().withN(String.valueOf(getTimestamp(DAYS_BACK))));
 
         DynamoDBQueryExpression<WeatherData> query = new DynamoDBQueryExpression<WeatherData>()
-                .withHashKeyValues(new WeatherData(CITY_ID))
+                .withHashKeyValues(new WeatherData(queryRequest.getCityId()))
                 .withRangeKeyCondition("timestamp", rangeKeyCondition);
 
         List<WeatherData> weatherDataList = mapper.query(WeatherData.class, query);
 
-        Map<String, String> response = new LinkedHashMap<>();
-        response.put("statusCode", "200");
-        response.put("body", OBJECT_MAPPER.writeValueAsString(weatherDataList));
-        OBJECT_MAPPER.writeValue(outputStream, response);
+        OBJECT_MAPPER.writeValue(outputStream, weatherDataList);
     }
 
-    private static void printInput(InputStream inputStream) throws IOException {
-        byte[] buffer = new byte[1024 * 1024];
-        int len = inputStream.read(buffer);
-        System.out.println(new String(buffer, 0, len));
+    private Long getTimestamp(int daysBack) {
+        return (System.currentTimeMillis() - daysBack * 24 * 60 * 60 * 1000) / 1000;
     }
 }
