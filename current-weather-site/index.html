@@ -1,117 +1,138 @@
 <html>
 <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <title>Weather Iasi</title>
-</head>
-<body>
-<script>
-    function renderChart(url) {
+    <script>
         function type(d) {
             d.date = new Date(d.timestamp * 1000);
             return d;
         }
 
-        d3.json(url, render);
+        function renderChart(url) {
+            d3.json(url, render);
 
-        function render(error, data) {
-            if (!data) {return;}
+            function render(error, data) {
+                if (!data) {return;}
 
-            data.forEach(function (d) {
-                d.date = new Date(d.timestamp * 1000);
-            });
-
-            var cityName = data[0].cityName;
-
-            var svg = d3.select("body")
-                .append("svg")
-                .attr("class", "svg " + cityName)
-                .attr("width", 600)
-                .attr("height", 280);
-
-            var margin = {top: 40, right: 20, bottom: 30, left: 50},
-                width = +svg.attr("width") - margin.left - margin.right,
-                height = +svg.attr("height") - margin.top - margin.bottom;
-
-            var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-            // the scales
-            var x = d3.scaleTime().rangeRound([0, width]);
-            var y = d3.scaleLinear().rangeRound([height, 0]);
-
-            // the axes
-            var xAxis = d3.axisBottom().scale(x);
-            var yAxis = d3.axisLeft().scale(y);
-
-            var line = d3.line()
-                .x(function (d) {return x(d.date);})
-                .y(function (d) {return y(d.temp);});
-
-            x.domain(d3.extent(data, function (d) {return d.date;}));
-            y.domain(d3.extent(data, function (d) {return +d.temp;}));
-
-            g.append("text")
-                .attr("class", "title " + cityName)
-                .attr("x", width / 2)
-                .attr("y", -10)
-                .attr("text-anchor", "middle")
-                .attr("fill", "darkblue")
-                .attr("font-size", "20")
-                .text(cityName + " " + data[data.length - 1].temp);
-
-            g.append("g")
-                .attr("class", "x axis " + cityName)
-                .attr("transform", "translate(0," + height + ")")
-                .call(xAxis);
-
-            g.append("g")
-                .attr("class", "y axis " + cityName)
-                .call(yAxis)
-                .append("text")
-                .attr("fill", "#000")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 6)
-                .attr("dy", "0.71em")
-                .attr("text-anchor", "end")
-                .text("Temp (°C)");
-
-            path = g.append("path").datum(data)
-                .attr("class", "path " + cityName)
-                .attr("fill", "none")
-                .attr("stroke", "steelblue")
-                .attr("stroke-linejoin", "round")
-                .attr("stroke-linecap", "round")
-                .attr("stroke-width", 1)
-                .attr("d", line);
-
-            setInterval(function () {updateData();}, 60 * 1000);
-
-            function updateData() {
-                d3.json(url, type, function (error, data) {
-                    data = filterDataLastNoDays(data, 3);
-                    var cityName = data[0].cityName;
-
-                    x.domain(d3.extent(data, function (d) {return d.date;}));
-                    y.domain(d3.extent(data, function (d) {return +d.temp;}));
-
-                    var svg = d3.select(".svg." + cityName);
-
-                    svg.select(".path." + cityName).attr("d", line(data));
-                    svg.select(".x.axis." + cityName).call(xAxis);
-                    svg.select(".y.axis." + cityName).call(yAxis);
-                    svg.select(".title." + cityName).text(cityName + " " + data[data.length - 1].temp);
+                data.forEach(function (d) {
+                    d.date = new Date(d.timestamp * 1000);
                 });
+
+                var cityName = data[0].cityName;
+
+                var svg = d3.select("svg");
+
+                var margin = {top: 40, right: 20, bottom: 30, left: 50},
+                    width = +svg.attr("width") - margin.left - margin.right,
+                    height = +svg.attr("height") - margin.top - margin.bottom;
+
+                var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                // the scales
+                var x = d3.scaleTime().rangeRound([0, width]);
+                var y = d3.scaleLinear().rangeRound([height, 0]);
+
+                // the axes
+                var xAxis = d3.axisBottom().scale(x);
+                var yAxis = d3.axisLeft().scale(y);
+
+                var line = d3.line()
+                    .x(function (d) {return x(d.date);})
+                    .y(function (d) {return y(d.temp);});
+
+                x.domain(d3.extent(data, function (d) {return d.date;}));
+                y.domain(d3.extent(data, function (d) {return +d.temp;}));
+
+                g.append("text")
+                    .attr("class", "title " + cityName)
+                    .attr("x", width / 2)
+                    .attr("y", -10)
+                    .attr("text-anchor", "middle")
+                    .attr("fill", "darkblue")
+                    .attr("font-size", "20")
+                    .text(cityName + " " + data[data.length - 1].temp);
+
+                g.append("g")
+                    .attr("class", "x axis " + cityName)
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(xAxis);
+
+                g.append("g")
+                    .attr("class", "y axis " + cityName)
+                    .call(yAxis)
+                    .append("text")
+                    .attr("fill", "#000")
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", 6)
+                    .attr("dy", "0.71em")
+                    .attr("text-anchor", "end")
+                    .text("Temp (°C)");
+
+                path = g.append("path").datum(data)
+                    .attr("class", "path " + cityName)
+                    .attr("fill", "none")
+                    .attr("stroke", "steelblue")
+                    .attr("stroke-linejoin", "round")
+                    .attr("stroke-linecap", "round")
+                    .attr("stroke-width", 1)
+                    .attr("d", line);
             }
         }
-    }
 
-    var cities = [675810, 683506, 2950159, 2759794, 264371, 2661552,
+        function updateData(url) {
+            d3.json(url, type, function (error, data) {
+                data = filterDataLastNoDays(data, 3);
+                var cityName = data[0].cityName;
+
+                var x = d3.scaleTime().rangeRound([0, width]);
+                var y = d3.scaleLinear().rangeRound([height, 0]);
+
+                x.domain(d3.extent(data, function (d) {return d.date;}));
+                y.domain(d3.extent(data, function (d) {return +d.temp;}));
+
+                var svg = d3.select("svg");
+
+                svg.select(".path." + cityName).attr("d", line(data));
+                svg.select(".x.axis." + cityName).call(xAxis);
+                svg.select(".y.axis." + cityName).call(yAxis);
+                svg.select(".title." + cityName).text(cityName + " " + data[data.length - 1].temp);
+            });
+        }
+
+    </script>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-sm-3 col-md-2 d-none d-sm-block bg-light sidebar">
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Iasi</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Bucharest</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Helsinki</a>
+                </li>
+            </ul>
+        </nav>
+        <main class="col-sm-9 ml-sm-auto col-md-10 pt-3">
+            <svg width="600" height="280"></svg>
+        </main>
+    </div>
+</div>
+
+<script>
+
+    var cities = [675810/*, 683506, 2950159, 2759794, 264371, 2661552,
         3060972, 2800867, 2960316, 616187, 3186886, 792680, 3054643,
         2618425, 2964574, 658226, 703448, 6458923, 3196359, 2643743,
-        6359304, 6453366, 6455259];
+        6359304, 6453366, 6455259*/];
 
-    cities.forEach(function(cityId){
-        renderChart("https://0z2b3gf0dk.execute-api.eu-west-1.amazonaws.com/test/weather/current/" + cityId);
-    });
+    renderChart("https://0z2b3gf0dk.execute-api.eu-west-1.amazonaws.com/test/weather/current/675810");
+    updateData("https://0z2b3gf0dk.execute-api.eu-west-1.amazonaws.com/test/weather/current/2661552");
 </script>
 </body>
 </html>
