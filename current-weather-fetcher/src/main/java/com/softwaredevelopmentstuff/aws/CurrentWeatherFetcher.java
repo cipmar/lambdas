@@ -1,11 +1,6 @@
 package com.softwaredevelopmentstuff.aws;
 
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.Table;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softwaredevelopmentstuff.aws.info.WeatherInfo;
 
@@ -14,14 +9,15 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static java.lang.System.getenv;
 import static java.util.Arrays.asList;
-import static java.util.Optional.ofNullable;
+import static javax.ws.rs.core.Response.Status.OK;
 
 public class CurrentWeatherFetcher {
+    private static final Logger LOGGER = Logger.getLogger("WeatherFetcher");
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final WebTarget WEATHER_WEB_TARGET = ClientBuilder
             .newClient()
@@ -30,45 +26,40 @@ public class CurrentWeatherFetcher {
             .queryParam("units", "metric")
             .queryParam("appid", getenv("openWeatherAppId"));
 
-    public void handler(InputStream inputStream) throws IOException {
+    public void handler(Object ignore) throws IOException {
         List<String> cities = asList(getenv("cities").split(","));
 
         for (String cityId : cities) {
+            LOGGER.info("Fetching weather data for cityId " + cityId);
+
             Response response = WEATHER_WEB_TARGET
                     .queryParam("id", cityId)
                     .request(MediaType.APPLICATION_JSON)
                     .get();
 
-            String strResponse = response.readEntity(String.class);
-            WeatherInfo weatherInfo = OBJECT_MAPPER.readValue(strResponse, WeatherInfo.class);
-
-            try {
-                saveToDynamoDb(weatherInfo);
-            } catch (Exception e) {
-                System.out.println("Failed to save weather data: " + strResponse);
-                throw e;
+            if (response.getStatus() == OK.getStatusCode()) {
+                handleOkResponse(response);
+            } else {
+                handleErrorResponse(response);
             }
         }
     }
 
-    private void saveToDynamoDb(WeatherInfo weatherInfo) {
-        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
-        DynamoDB dynamoDB = new DynamoDB(client);
+    private void handleOkResponse(Response response) throws IOException {
+        String strResponse = response.readEntity(String.class);
+        WeatherInfo weatherInfo = OBJECT_MAPPER.readValue(strResponse, WeatherInfo.class);
 
-        Table table = dynamoDB.getTable("weather2");
+        try {
+            new StorageService().saveWeatherInfo(weatherInfo);
+            LOGGER.info("Weather data fetched successfully");
+        } catch (Exception e) {
+            LOGGER.severe("Failed to save weather data: " + strResponse);
+            throw e;
+        }
+    }
 
-        final Item item = new Item()
-                .withPrimaryKey("cityId", weatherInfo.id)
-                .withNumber("timestamp", weatherInfo.dt)
-                .withString("cityName", weatherInfo.name)
-                .withNumber("temp", weatherInfo.main.temp);
-
-        ofNullable(weatherInfo.main.humidity).ifPresent(v -> item.withNumber("humidity", v));
-        ofNullable(weatherInfo.main.pressure).ifPresent(v -> item.withNumber("pressure", v));
-        ofNullable(weatherInfo.visibility).ifPresent(v -> item.withNumber("visibility", v));
-        ofNullable(weatherInfo.wind.deg).ifPresent(v -> item.withNumber("windDeg", v));
-        ofNullable(weatherInfo.wind.speed).ifPresent(v -> item.withNumber("windSpeed", v));
-
-        table.putItem(item);
+    private void handleErrorResponse(Response response) {
+        String strResponse = response.readEntity(String.class);
+        LOGGER.severe("ERROR: Failed to call weather open API: Status code: " + response.getStatus() + " and body: " + strResponse);
     }
 }
