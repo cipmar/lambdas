@@ -87,7 +87,6 @@
 
             function updateData() {
                 d3.json(url, type, function (error, data) {
-                    data = filterDataLastNoDays(data, 3);
                     var cityName = data[0].cityName;
 
                     x.domain(d3.extent(data, function (d) {return d.date;}));
@@ -104,10 +103,7 @@
         }
     }
 
-    var cities = [675810, 683506, 2950159, 2759794, 264371, 2661552,
-        3060972, 2800867, 2960316, 616187, 3186886, 792680, 3054643,
-        2618425, 2964574, 658226, 703448, 6458923, 3196359, 2643743,
-        6359304, 6453366, 6455259];
+    var cities = [675810, 683506, 658226, 6455259];
 
     cities.forEach(function(cityId){
         renderChart("https://0z2b3gf0dk.execute-api.eu-west-1.amazonaws.com/test/weather/current/" + cityId);
