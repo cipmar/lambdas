@@ -44,6 +44,7 @@
         <module>current-weather-fetcher</module>
         <module>current-weather-streaming</module>
         <module>current-weather-query</module>
+        <module>utils</module>
     </modules>
 
     <dependencyManagement>
