@@ -4,27 +4,27 @@
     <title>Weather Iasi</title>
 </head>
 <body>
+
 <script>
-    function renderChart(url) {
+    function renderChart(city) {
         function type(d) {
             d.date = new Date(d.timestamp * 1000);
             return d;
         }
 
+        var url = "https://0z2b3gf0dk.execute-api.eu-west-1.amazonaws.com/test/weather/current/" + city.id;
         d3.json(url, render);
 
         function render(error, data) {
+            if (error) {console.log(error); return;}
             if (!data) {return;}
 
             data.forEach(function (d) {
                 d.date = new Date(d.timestamp * 1000);
             });
 
-            var cityName = data[0].cityName;
-
-            var svg = d3.select("body")
-                .append("svg")
-                .attr("class", "svg " + cityName)
+            var svg = d3.select("#" + city.name)
+                .attr("class", "svg " + city.name)
                 .attr("width", 600)
                 .attr("height", 280);
 
@@ -50,21 +50,21 @@
             y.domain(d3.extent(data, function (d) {return +d.temp;}));
 
             g.append("text")
-                .attr("class", "title " + cityName)
+                .attr("class", "title " + city.name)
                 .attr("x", width / 2)
                 .attr("y", -10)
                 .attr("text-anchor", "middle")
                 .attr("fill", "darkblue")
                 .attr("font-size", "20")
-                .text(cityName + " " + data[data.length - 1].temp);
+                .text(city.name + " " + data[data.length - 1].temp);
 
             g.append("g")
-                .attr("class", "x axis " + cityName)
+                .attr("class", "x axis " + city.name)
                 .attr("transform", "translate(0," + height + ")")
                 .call(xAxis);
 
             g.append("g")
-                .attr("class", "y axis " + cityName)
+                .attr("class", "y axis " + city.name)
                 .call(yAxis)
                 .append("text")
                 .attr("fill", "#000")
@@ -75,7 +75,7 @@
                 .text("Temp (°C)");
 
             path = g.append("path").datum(data)
-                .attr("class", "path " + cityName)
+                .attr("class", "path " + city.name)
                 .attr("fill", "none")
                 .attr("stroke", "steelblue")
                 .attr("stroke-linejoin", "round")
@@ -83,30 +83,40 @@
                 .attr("stroke-width", 1)
                 .attr("d", line);
 
-            setInterval(function () {updateData();}, 60 * 1000);
+            setInterval(function () {updateData();}, 60 * 100);
 
             function updateData() {
                 d3.json(url, type, function (error, data) {
-                    var cityName = data[0].cityName;
-
                     x.domain(d3.extent(data, function (d) {return d.date;}));
                     y.domain(d3.extent(data, function (d) {return +d.temp;}));
 
-                    var svg = d3.select(".svg." + cityName);
+                    var svg = d3.select("#" + city.name);
 
-                    svg.select(".path." + cityName).attr("d", line(data));
-                    svg.select(".x.axis." + cityName).call(xAxis);
-                    svg.select(".y.axis." + cityName).call(yAxis);
-                    svg.select(".title." + cityName).text(cityName + " " + data[data.length - 1].temp);
+                    svg.select(".path." + city.name).attr("d", line(data));
+                    svg.select(".x.axis." + city.name).call(xAxis);
+                    svg.select(".y.axis." + city.name).call(yAxis);
+                    svg.select(".title." + city.name).text(city.name + " " + data[data.length - 1].temp);
                 });
             }
         }
     }
 
-    var cities = [675810, 683506, 658226, 6455259];
+    var cities = [
+        {id: 675810, name: "Iasi"},
+        {id: 683506, name: "Bucharest"},
+        {id: 658226, name: "Helsinki"},
+        {id: 6455259, name: "Paris"}
+    ];
 
-    cities.forEach(function(cityId){
-        renderChart("https://0z2b3gf0dk.execute-api.eu-west-1.amazonaws.com/test/weather/current/" + cityId);
+    d3.select("body")
+        .selectAll("svg")
+        .data(cities)
+        .enter()
+        .append("svg")
+        .attr("id", function(data){return data.name});
+
+    cities.forEach(function(city){
+        renderChart(city);
     });
 </script>
 </body>
