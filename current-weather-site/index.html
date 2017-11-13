@@ -12,7 +12,7 @@
             return d;
         }
 
-        var url = "https://0z2b3gf0dk.execute-api.eu-west-1.amazonaws.com/test/weather/current/" + city.id;
+        var url = API_ENDPOINT + city.id;
         d3.json(url, render);
 
         function render(error, data) {
@@ -83,7 +83,7 @@
                 .attr("stroke-width", 1)
                 .attr("d", line);
 
-            setInterval(function () {updateData();}, 60 * 100);
+            setInterval(function () {updateData();}, REFRESH_INTERVAL);
 
             function updateData() {
                 d3.json(url, type, function (error, data) {
@@ -101,7 +101,10 @@
         }
     }
 
-    var cities = [
+    const API_ENDPOINT = "https://0z2b3gf0dk.execute-api.eu-west-1.amazonaws.com/test/weather/current/";
+    const REFRESH_INTERVAL = 60 * 1000;
+
+    const CITIES = [
         {id: 675810, name: "Iasi"},
         {id: 683506, name: "Bucharest"},
         {id: 658226, name: "Helsinki"},
@@ -110,12 +113,12 @@
 
     d3.select("body")
         .selectAll("svg")
-        .data(cities)
+        .data(CITIES)
         .enter()
         .append("svg")
         .attr("id", function(data){return data.name});
 
-    cities.forEach(function(city){
+    CITIES.forEach(function(city){
         renderChart(city);
     });
 </script>
