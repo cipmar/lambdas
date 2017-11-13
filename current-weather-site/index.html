@@ -6,22 +6,20 @@
 <body>
 
 <script>
-    function renderChart(city) {
-        function type(d) {
-            d.date = new Date(d.timestamp * 1000);
-            return d;
-        }
+    function transform(d) {
+        return d.map(function(item) {
+            item.date = new Date(item.timestamp * 1000); return item;
+        });
+    }
 
+    function renderChart(city) {
         var url = API_ENDPOINT + city.id;
         d3.json(url, render);
 
         function render(error, data) {
-            if (error) {console.log(error); return;}
             if (!data) {return;}
 
-            data.forEach(function (d) {
-                d.date = new Date(d.timestamp * 1000);
-            });
+            data = transform(data);
 
             var svg = d3.select("#" + city.name)
                 .attr("class", "svg " + city.name)
@@ -86,7 +84,9 @@
             setInterval(function () {updateData();}, REFRESH_INTERVAL);
 
             function updateData() {
-                d3.json(url, type, function (error, data) {
+                d3.json(url, function (error, data) {
+                    data = transform(data);
+
                     x.domain(d3.extent(data, function (d) {return d.date;}));
                     y.domain(d3.extent(data, function (d) {return +d.temp;}));
 
